@@ -20,7 +20,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-screen bg-background">
-      <aside className="w-64 shrink-0 bg-sidebar border-r border-sidebar-border flex flex-col">
+      <aside className="w-64 shrink-0 bg-sidebar border-r border-sidebar-border flex flex-col sticky top-0 h-screen">
         <div className="px-5 py-6 flex items-center gap-3">
           <div className="h-11 w-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg">
             {initial}
