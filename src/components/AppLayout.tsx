@@ -16,9 +16,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const initial = (workspace?.name?.[0] ?? "D").toUpperCase();
 
-  const nav = role === "manager"
-    ? [...baseNav, { to: "/manage", label: "Manage", icon: Settings }]
-    : baseNav;
+  const isManager = role === "manager";
 
   return (
     <div className="flex min-h-screen bg-background">
