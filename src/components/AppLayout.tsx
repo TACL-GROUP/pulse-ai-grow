@@ -53,6 +53,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         </nav>
 
         <div className="p-3 border-t border-sidebar-border space-y-2">
+          <Button className="w-full rounded-full gap-2 shadow-md" onClick={() => navigate("/today")}>
+            <Download className="h-4 w-4" /> Get extension
+          </Button>
           <div className="px-2 py-1 text-xs text-sidebar-foreground/70 truncate">
             {profile?.full_name ?? profile?.email}
             <span className="ml-1 capitalize text-primary">· {role}</span>
@@ -64,11 +67,6 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       </aside>
 
       <main className="flex-1 relative">
-        <div className="absolute top-6 right-8">
-          <Button className="rounded-full gap-2 shadow-md" onClick={() => navigate("/today")}>
-            <Download className="h-4 w-4" /> Get extension
-          </Button>
-        </div>
         <div className="px-10 py-12 max-w-6xl">{children}</div>
       </main>
     </div>
