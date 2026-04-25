@@ -11,7 +11,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Trash2, Plus, Mail } from "lucide-react";
+import { Trash2, Plus, Mail, Coins } from "lucide-react";
 
 const DEPARTMENTS = ["All", "Finance", "Sales", "Legal", "HR", "Engineering"];
 

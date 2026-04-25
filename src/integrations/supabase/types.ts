@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      coin_adjustments: {
+        Row: {
+          adjusted_by: string
+          amount: number
+          created_at: string
+          id: string
+          reason: string | null
+          user_id: string
+          workspace_id: string
+        }
+        Insert: {
+          adjusted_by: string
+          amount: number
+          created_at?: string
+          id?: string
+          reason?: string | null
+          user_id: string
+          workspace_id: string
+        }
+        Update: {
+          adjusted_by?: string
+          amount?: number
+          created_at?: string
+          id?: string
+          reason?: string | null
+          user_id?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       invitations: {
         Row: {
           created_at: string
@@ -353,6 +383,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      adjust_user_coins: {
+        Args: { _amount: number; _reason?: string; _user_id: string }
+        Returns: number
+      }
       approve_completion: {
         Args: { _completion_id: string }
         Returns: undefined
