@@ -50,7 +50,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               </NavLink>
             ))}
           </div>
-          <div className="mt-auto pb-3 space-y-1">
+          <div className="mt-auto pb-3 space-y-3">
             <Button className="w-full rounded-full gap-2 shadow-md" onClick={() => navigate("/today")}>
               <Download className="h-4 w-4" /> Get extension
             </Button>
