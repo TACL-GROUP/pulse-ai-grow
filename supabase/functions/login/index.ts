@@ -3,7 +3,7 @@ import { z } from 'https://esm.sh/zod@3.23.8';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-sys-token',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
@@ -42,6 +42,27 @@ Deno.serve(async (req) => {
   if (req.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
 
   try {
+    // Vérification du jeton système (SYS_TOKEN) — authentifie l'appelant de la requête
+    const sysToken = Deno.env.get('SYS_TOKEN');
+    if (!sysToken) {
+      return json({ error: 'Server misconfigured: SYS_TOKEN missing' }, 500);
+    }
+    const provided =
+      req.headers.get('x-sys-token') ??
+      req.headers.get('X-Sys-Token') ??
+      '';
+    // Comparaison à temps constant pour éviter les timing attacks
+    const a = new TextEncoder().encode(provided);
+    const b = new TextEncoder().encode(sysToken);
+    let equal = a.length === b.length;
+    const len = Math.max(a.length, b.length);
+    let diff = a.length ^ b.length;
+    for (let i = 0; i < len; i++) diff |= (a[i] ?? 0) ^ (b[i] ?? 0);
+    equal = diff === 0;
+    if (!equal) {
+      return json({ error: 'Invalid system token' }, 401);
+    }
+
     // Rate limit par IP
     const ip =
       req.headers.get('x-forwarded-for')?.split(',')[0].trim() ??
