@@ -33,29 +33,33 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           </div>
         </div>
 
-        <nav className="flex-1 px-3 space-y-1 mt-2">
-          {nav.map(({ to, label, icon: Icon }) => (
-            <NavLink
-              key={to}
-              to={to}
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-                  isActive
-                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                    : "text-sidebar-foreground hover:bg-sidebar-accent/60"
-                }`
-              }
-            >
-              <Icon className="h-5 w-5" />
-              {label}
-            </NavLink>
-          ))}
+        <nav className="flex-1 px-3 mt-2 flex flex-col">
+          <div className="space-y-1">
+            {nav.map(({ to, label, icon: Icon }) => (
+              <NavLink
+                key={to}
+                to={to}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                    isActive
+                      ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                      : "text-sidebar-foreground hover:bg-sidebar-accent/60"
+                  }`
+                }
+              >
+                <Icon className="h-5 w-5" />
+                {label}
+              </NavLink>
+            ))}
+          </div>
+          <div className="mt-auto pb-3">
+            <Button className="w-full rounded-full gap-2 shadow-md" onClick={() => navigate("/today")}>
+              <Download className="h-4 w-4" /> Get extension
+            </Button>
+          </div>
         </nav>
 
-        <div className="p-3 border-t border-sidebar-border space-y-2 mb-4">
-          <Button className="w-full rounded-full gap-2 shadow-md" onClick={() => navigate("/today")}>
-            <Download className="h-4 w-4" /> Get extension
-          </Button>
+        <div className="p-3 border-t border-sidebar-border space-y-2">
           <div className="px-2 py-1 text-xs text-sidebar-foreground/70 truncate">
             {profile?.full_name ?? profile?.email}
             <span className="ml-1 capitalize text-primary">· {role}</span>
