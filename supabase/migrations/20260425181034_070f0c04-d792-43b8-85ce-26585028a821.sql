@@ -1,0 +1,11 @@
+INSERT INTO public.tasks (workspace_id, created_by, title, description, department, coin_value) VALUES
+('2b13682c-af1d-4a0f-9856-68c50bc1c3e4','c5a78089-d46b-4d71-89ad-1c7523b1ae98','Quarterly SaaS Burn Rate Analysis','Process AWS and Azure billing exports to categorize infrastructure spend vs R&D credits.','Finance',55),
+('2b13682c-af1d-4a0f-9856-68c50bc1c3e4','c5a78089-d46b-4d71-89ad-1c7523b1ae98','Categorize Staff Lunch Expenses','Scan receipts and tag as ''Meals'' or ''Entertainment''.','Finance',10),
+('2b13682c-af1d-4a0f-9856-68c50bc1c3e4','c5a78089-d46b-4d71-89ad-1c7523b1ae98','CRM Lead Prioritization','Analyze LinkedIn profiles and company size to assign Lead Scores to 500 prospects.','Sales',50),
+('2b13682c-af1d-4a0f-9856-68c50bc1c3e4','c5a78089-d46b-4d71-89ad-1c7523b1ae98','Personalized Email Outreach','Draft 50 custom introductory emails based on recent news about target accounts.','Sales',35),
+('2b13682c-af1d-4a0f-9856-68c50bc1c3e4','c5a78089-d46b-4d71-89ad-1c7523b1ae98','Open Source License Audit','Scan GitHub repository for AGPL or high-risk licenses and generate compliance report.','Legal',60),
+('2b13682c-af1d-4a0f-9856-68c50bc1c3e4','c5a78089-d46b-4d71-89ad-1c7523b1ae98','Summarize Weekly NDAs','Extract key dates and termination clauses from standard vendor NDAs.','Legal',25),
+('2b13682c-af1d-4a0f-9856-68c50bc1c3e4','c5a78089-d46b-4d71-89ad-1c7523b1ae98','Technical Interview Summarization','Transcribe interview audio and highlight responses related to Kubernetes proficiency.','HR',45),
+('2b13682c-af1d-4a0f-9856-68c50bc1c3e4','c5a78089-d46b-4d71-89ad-1c7523b1ae98','Policy Manual Grammar Check','Read 200-page employee handbook to fix minor typos.','HR',12),
+('2b13682c-af1d-4a0f-9856-68c50bc1c3e4','c5a78089-d46b-4d71-89ad-1c7523b1ae98','PR Description Generator','Analyze diffs of 10 commits to auto-generate a comprehensive Pull Request summary.','Engineering',40),
+('2b13682c-af1d-4a0f-9856-68c50bc1c3e4','c5a78089-d46b-4d71-89ad-1c7523b1ae98','Unit Test Generation','Draft boilerplate Jest tests for 5 new API endpoints.','Engineering',30);
