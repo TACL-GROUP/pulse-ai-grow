@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { Calendar, BookOpen, Trophy, Gift, Settings, LogOut, Download } from "lucide-react";
+import { Calendar, BookOpen, Trophy, Gift, Settings, Download, ChevronRight } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { ReactNode } from "react";
@@ -12,7 +12,7 @@ const baseNav = [
 ];
 
 export default function AppLayout({ children }: { children: ReactNode }) {
-  const { workspace, profile, role, signOut } = useAuth();
+  const { workspace, profile, role } = useAuth();
   const navigate = useNavigate();
   const initial = (workspace?.name?.[0] ?? "D").toUpperCase();
 
@@ -72,14 +72,25 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           </div>
         </nav>
 
-        <div className="p-3 border-t border-sidebar-border space-y-2">
-          <div className="px-2 py-1 text-xs text-sidebar-foreground/70 truncate">
-            {profile?.full_name ?? profile?.email}
-            <span className="ml-1 capitalize text-primary">· {role}</span>
-          </div>
-          <Button variant="ghost" size="sm" className="w-full justify-start gap-2" onClick={signOut}>
-            <LogOut className="h-4 w-4" /> Sign out
-          </Button>
+        <div className="p-3 border-t border-sidebar-border">
+          <button
+            onClick={() => navigate("/account")}
+            className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-sidebar-accent/60 transition-colors text-left group"
+            aria-label="Open account settings"
+          >
+            <div className="h-9 w-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold text-sm shrink-0">
+              {(profile?.full_name?.[0] ?? profile?.email?.[0] ?? "U").toUpperCase()}
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-sm font-medium text-sidebar-foreground truncate">
+                {profile?.full_name ?? profile?.email}
+              </div>
+              <div className="text-xs text-sidebar-foreground/70 capitalize truncate">
+                {role} · 🌑 {profile?.coins_balance ?? 0}
+              </div>
+            </div>
+            <ChevronRight className="h-4 w-4 text-sidebar-foreground/50 group-hover:text-sidebar-foreground shrink-0" />
+          </button>
         </div>
       </aside>
 

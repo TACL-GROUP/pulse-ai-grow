@@ -12,6 +12,7 @@ import Library from "./pages/Library.tsx";
 import Leaderboard from "./pages/Leaderboard.tsx";
 import Rewards from "./pages/Rewards.tsx";
 import Manage from "./pages/Manage.tsx";
+import Account from "./pages/Account.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
             <Route path="/rewards" element={<ProtectedRoute><Rewards /></ProtectedRoute>} />
             <Route path="/manage" element={<ProtectedRoute managerOnly><Manage /></ProtectedRoute>} />
+            <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
