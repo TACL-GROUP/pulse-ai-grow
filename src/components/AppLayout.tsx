@@ -16,9 +16,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const initial = (workspace?.name?.[0] ?? "D").toUpperCase();
 
-  const nav = role === "manager"
-    ? [...baseNav, { to: "/manage", label: "Manage", icon: Settings }]
-    : baseNav;
+  const isManager = role === "manager";
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -35,7 +33,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
         <nav className="flex-1 px-3 mt-2 flex flex-col">
           <div className="space-y-1">
-            {nav.map(({ to, label, icon: Icon }) => (
+            {baseNav.map(({ to, label, icon: Icon }) => (
               <NavLink
                 key={to}
                 to={to}
@@ -52,10 +50,25 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               </NavLink>
             ))}
           </div>
-          <div className="mt-auto pb-3">
+          <div className="mt-auto pb-3 space-y-1">
             <Button className="w-full rounded-full gap-2 shadow-md" onClick={() => navigate("/today")}>
               <Download className="h-4 w-4" /> Get extension
             </Button>
+            {isManager && (
+              <NavLink
+                to="/manage"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                    isActive
+                      ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                      : "text-sidebar-foreground hover:bg-sidebar-accent/60"
+                  }`
+                }
+              >
+                <Settings className="h-5 w-5" />
+                Manage
+              </NavLink>
+            )}
           </div>
         </nav>
 
