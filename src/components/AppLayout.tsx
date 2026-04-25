@@ -52,7 +52,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           ))}
         </nav>
 
-        <div className="p-3 border-t border-sidebar-border space-y-2">
+        <div className="p-3 border-t border-sidebar-border space-y-2 mb-4">
           <Button className="w-full rounded-full gap-2 shadow-md" onClick={() => navigate("/today")}>
             <Download className="h-4 w-4" /> Get extension
           </Button>
