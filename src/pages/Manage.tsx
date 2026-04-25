@@ -11,7 +11,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Trash2, Plus, Mail } from "lucide-react";
+import { Trash2, Plus, Mail, Coins } from "lucide-react";
 
 const DEPARTMENTS = ["All", "Finance", "Sales", "Legal", "HR", "Engineering"];
 
@@ -337,21 +337,157 @@ function MembersTab() {
       <section>
         <h3 className="font-bold mb-3">Members ({members.length})</h3>
         {members.map((m) => (
-          <Card key={m.id} className="p-4 mb-2 rounded-xl border-0 shadow-sm flex justify-between items-center">
-            <div>
-              <div className="font-medium">{m.full_name || m.email}</div>
-              <div className="text-xs text-muted-foreground">
+          <Card key={m.id} className="p-4 mb-2 rounded-xl border-0 shadow-sm flex justify-between items-center gap-3">
+            <div className="min-w-0 flex-1">
+              <div className="font-medium truncate">{m.full_name || m.email}</div>
+              <div className="text-xs text-muted-foreground truncate">
                 {m.email} · {m.department || "no dept"} · <span className="text-primary capitalize">{m.role}</span>
               </div>
             </div>
-            {m.id !== user?.id && (
-              <Button size="icon" variant="ghost" onClick={() => removeMember(m.id)}>
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            )}
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="text-sm font-semibold text-coin whitespace-nowrap">🌑 {m.coins_balance ?? 0}</span>
+              <AdjustCoinsDialog member={m} onDone={load} />
+              {m.id !== user?.id && (
+                <Button size="icon" variant="ghost" onClick={() => removeMember(m.id)}>
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
           </Card>
         ))}
       </section>
     </div>
+  );
+}
+
+/* ---------------- ADJUST COINS DIALOG ---------------- */
+function AdjustCoinsDialog({ member, onDone }: { member: any; onDone: () => void }) {
+  const [open, setOpen] = useState(false);
+  const [mode, setMode] = useState<"add" | "remove">("add");
+  const [amount, setAmount] = useState<number>(10);
+  const [reason, setReason] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [history, setHistory] = useState<any[]>([]);
+
+  const loadHistory = async () => {
+    const { data } = await supabase
+      .from("coin_adjustments")
+      .select("id, amount, reason, created_at, adjusted_by")
+      .eq("user_id", member.id)
+      .order("created_at", { ascending: false })
+      .limit(10);
+    setHistory(data ?? []);
+  };
+
+  useEffect(() => {
+    if (open) {
+      loadHistory();
+      setMode("add");
+      setAmount(10);
+      setReason("");
+    }
+  }, [open]);
+
+  const submit = async () => {
+    if (!amount || amount <= 0) {
+      toast.error("Enter a positive amount");
+      return;
+    }
+    setSubmitting(true);
+    const signedAmount = mode === "add" ? amount : -amount;
+    const { error } = await supabase.rpc("adjust_user_coins", {
+      _user_id: member.id,
+      _amount: signedAmount,
+      _reason: reason || null,
+    });
+    setSubmitting(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success(mode === "add" ? `+${amount} coins added` : `−${amount} coins removed`);
+    setOpen(false);
+    onDone();
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button size="sm" variant="outline" className="rounded-full gap-1">
+          <Coins className="h-4 w-4" /> Adjust
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="rounded-3xl">
+        <DialogHeader>
+          <DialogTitle>Adjust wallet — {member.full_name || member.email}</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div className="p-3 bg-primary-soft rounded-xl text-sm">
+            Current balance: <span className="font-semibold text-coin">🌑 {member.coins_balance ?? 0}</span>
+          </div>
+
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              variant={mode === "add" ? "default" : "outline"}
+              className="flex-1 rounded-full"
+              onClick={() => setMode("add")}
+            >
+              + Add
+            </Button>
+            <Button
+              type="button"
+              variant={mode === "remove" ? "default" : "outline"}
+              className="flex-1 rounded-full"
+              onClick={() => setMode("remove")}
+            >
+              − Remove
+            </Button>
+          </div>
+
+          <div>
+            <Label>Amount</Label>
+            <Input
+              type="number"
+              min={1}
+              value={amount}
+              onChange={(e) => setAmount(parseInt(e.target.value || "0", 10))}
+            />
+          </div>
+
+          <div>
+            <Label>Reason (optional)</Label>
+            <Textarea
+              placeholder="e.g. Bonus for great work"
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              maxLength={500}
+            />
+          </div>
+
+          <Button onClick={submit} disabled={submitting} className="w-full rounded-full">
+            {submitting ? "Saving…" : mode === "add" ? `Add ${amount} coins` : `Remove ${amount} coins`}
+          </Button>
+
+          {history.length > 0 && (
+            <div>
+              <h4 className="font-semibold text-sm mb-2">Recent adjustments</h4>
+              <div className="space-y-1 max-h-40 overflow-y-auto">
+                {history.map((h) => (
+                  <div key={h.id} className="flex justify-between text-xs p-2 bg-muted rounded-lg">
+                    <span className={h.amount > 0 ? "text-coin font-medium" : "text-destructive font-medium"}>
+                      {h.amount > 0 ? "+" : ""}{h.amount} 🌑
+                    </span>
+                    <span className="text-muted-foreground truncate ml-2">
+                      {h.reason || "—"} · {new Date(h.created_at).toLocaleDateString()}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
